@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "fatec_pdm_react_native_lembretes",
-    "slug": "fatec_pdm_react_native_lembretes",
+    "name": "Lembretes",
+    "slug": "lembretes",
     "platforms": [
       "ios",
       "android",
@@ -13,7 +13,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#fe7b69"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -23,6 +23,9 @@
     ],
     "ios": {
       "supportsTablet": true
+    },
+    "android": {
+      "package": "com.fatec.lembretes"
     }
   }
 }
