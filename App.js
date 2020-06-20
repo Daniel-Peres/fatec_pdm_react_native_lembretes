@@ -1,65 +1,66 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, ScrollView, FlatList, ToastAndroid } from 'react-native';
+import LembreteItem from './components/LembreteItem';
+import LembreteInput from './components/LembreteInput';
 
 
 export default function App() {
 
-  const [lembrete, setLembrete] = useState('');
+  //const [lembrete, setLembrete] = useState('');
   const [lembretes, setLembretes] = useState([]);
 
-  const [contadorLembretes, setContadorLembretes] = useState (0);
+  const [contadorLembretes, setContadorLembretes] = useState(0);
 
-  const capturarLembrete = (digitado) => {
-    setLembrete(digitado);
+  // const capturarLembrete = (digitado) => {
+  //   setLembrete(digitado);
+  // }
+
+  const adicionarLembrete = (lembrete) => {
+    if (lembrete === '') { // Se campo de mensagem estivar em branco não envia
+      return ToastAndroid.show("Escreva um lembrete !", ToastAndroid.SHORT)
+    } else {
+      setLembretes(lembretes => {
+        setContadorLembretes(contadorLembretes + 1);
+        return [{ key: contadorLembretes.toString(), value: lembrete }, ...lembretes];
+      })
+      ToastAndroid.show("Lembrete adicionado com sucesso !", ToastAndroid.SHORT)
+      //setLembrete(''); // apagando campo de mensagem
+      console.log(lembrete);
+    }
   }
 
-  const adicionarLembrete = () => {
-    if(lembrete === ''){ // Se campo de mensagem estivar em branco não envia
-      return ToastAndroid.show("Escreva um lembrete !", ToastAndroid.SHORT)
-    }else{ 
-      setLembretes(lembretes => {      
-      setContadorLembretes(contadorLembretes +1);
-      return [{key: contadorLembretes.toString(), value: lembrete}, ...lembretes];
-    }) 
-    ToastAndroid.show("Lembrete adicionado com sucesso !", ToastAndroid.SHORT)
-    setLembrete(''); // apagando campo de mensagem
-    console.log(lembrete);
-    }
-  }  
+  const apagarLembretes = () => {
+    setLembretes([]);
+  }
+
+  const removerLembrete = (keyASerRemovida) => {
+    setLembretes(lembretes => {
+      return lembretes.filter((lembrete) => {
+        return lembrete.key !== keyASerRemovida
+      })
+    })
+  }
 
   return (
     <View style={styles.telaPrincipalView}>
 
-      <View style={styles.lembreteView}>
-        {/* usuário irá inserir lembretes aqui */}
-        <TextInput 
-          placeholder="Lembrar..."
-          style={styles.lembreteTextInput}
-          onChangeText={capturarLembrete}
-          value={lembrete} />
-        <View style= {{width: '80%', marginTop: 8}}>
-          <Button title="Adicionar Lembrete" 
-          onPress={adicionarLembrete} />
-        </View>
-        <View style= {{width: '80%', marginTop: 8}}>
-          <Button title="Limpar Lembretes" 
-          onPress={
-            () => setLembretes([])            
-          } />
-        </View>
-      </View>
+      <LembreteInput onAdicionarLembrete={adicionarLembrete}
+        onApagarTudo={apagarLembretes} />
+
       <View>
         <FlatList
           data={lembretes}
           renderItem={
             lembrete => (
-              <View style={styles.itemNaLista}>
-                <Text style={styles.FlatList}>{lembrete.item.value}</Text>
-              </View>
+              <LembreteItem
+                chave={lembrete.item.key}
+                lembrete={lembrete.item.value}
+                onDelete={removerLembrete} />
             )
-          } />
+          }
+        />
 
-         {/* aqui será exibida a lista de lembretes
+        {/* aqui será exibida a lista de lembretes
          <ScrollView> 
          {
            lembretes.map(lembrete => 
@@ -71,17 +72,17 @@ export default function App() {
          }
          </ScrollView>
          */}
-         
+
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  itemNaLista:{
+  itemNaLista: {
     padding: 12,
     backgroundColor: '#EEE',
-    borderColor:'#000',
+    borderColor: '#000',
     borderWidth: 1,
     marginBottom: 8,
     borderRadius: 12,
@@ -90,7 +91,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
 
-  telaPrincipalView : {
+  telaPrincipalView: {
     padding: 50,
   },
   lembreteView: {
@@ -105,8 +106,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     padding: 2,
   },
-  FlatList:{
-    fontSize: 16, 
+  FlatList: {
+    fontSize: 16,
     textAlign: 'center'
   }
 });
